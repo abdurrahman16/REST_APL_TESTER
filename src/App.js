@@ -1,92 +1,66 @@
-import { useEffect } from 'react';
-import './App.css';
-import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    const controller = new AbortController();
 
-  //first state to hold data
-const [data, setData] = useState([]);
-const [loading, setLoading] = useState (false); 
-const [error, setError] = useState (false);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(false);
 
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/users",
+          { signal: controller.signal }
+        );
 
-const fetchData = async () => 
-  {
-        try {
-          setLoading (true);
-          setError (false);
-          const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-          setData (response.data);
-          setLoading (false);
+        setData(response.data);
+      } catch (err) {
+        if (err.name === "CanceledError" || err.name === "AbortError") return;
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            } 
+    fetchData();
 
-
-
-        catch (error) {
-          setError(true);
-          setLoading (false);
-          
-        }
-  }
-
-
-
-
-  //2nd useEffect to call fetch data
-        useEffect(() => {
-        fetchData ();
-        }, []);
-
-
-
-
-
-/*3rd showing data from lower div here */
+    // ✅ CLEANUP GOES HERE
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>API TESTER PROJECT BY RAHMAN ABDUR</h1>
-        <h3>
-  {error
-    ? "Something went wrong while fetching users"
-    : loading
-    ? "Loading users..."
-    : "Total Number of Users:" + data.length
-  }
-</h3>
-        <hr/>
-        
-      </header>
+      <h1>API TESTER PROJECT BY RAHMAN ABDUR</h1>
 
+      <input
+        type="text"
+        placeholder="Search Users..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
-<div className="data-container">
-  {data.map((users) => (
-  
-  <div className="user-grid">
-  {data.map((users) => (
-    <div className="user-card" key={users.id}>
-      <h2 className="user-name">👨🏻‍💼{users.name}</h2>
-      <p><strong>✉︎ Email:</strong>{users.email}</p>
-      <p><strong>📍City:</strong>{users.address.city}</p>
-    </div>
-  ))}
-</div>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error fetching data</p>}
 
-
-
-
-  ))}
-</div>
-
-
-
-
-
-
+      {data
+        .filter((u) =>
+          u.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map((user) => (
+          <div key={user.id}>
+            <h3>{user.name}</h3>
+            <p>{user.email}</p>
+            <p>{user.address.city}</p>
+          </div>
+        ))}
     </div>
   );
 }

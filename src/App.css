@@ -1,32 +1,213 @@
+/* ====== Base / Reset ====== */
+:root {
+  --bg: #0b1220;
+  --bg2: #0f172a;
+  --card: rgba(255, 255, 255, 0.06);
+  --cardBorder: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.72);
+  --muted2: rgba(255, 255, 255, 0.55);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  --shadow2: 0 22px 70px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
+  --radiusSm: 14px;
+  --ring: 0 0 0 4px rgba(99, 102, 241, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1100px 500px at 10% -10%, rgba(99, 102, 241, 0.45), transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(16, 185, 129, 0.25), transparent 55%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  color: var(--text);
+}
+
+/* ====== App Layout ====== */
 .App {
+  min-height: 100vh;
+  padding: 40px 16px 60px;
+}
+
+/* Center container */
+.App > h1,
+.App > input,
+.App > p,
+.user-grid {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ====== Header ====== */
+.App h1 {
+  margin: 0 auto 18px;
+  font-size: clamp(1.6rem, 2.5vw, 2.25rem);
+  letter-spacing: 0.2px;
+  font-weight: 750;
+  line-height: 1.15;
   text-align: center;
 }
-/* Grid container */
+
+.App h1::after {
+  content: "";
+  display: block;
+  width: 90px;
+  height: 4px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.9), rgba(16, 185, 129, 0.85));
+  opacity: 0.9;
+}
+
+/* Status text (loading/error) */
+.App p {
+  text-align: center;
+  margin: 10px auto 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* Optional if you set <p className="error">... */
+.App p.error {
+  color: #fecaca;
+}
+
+/* ====== Search Bar ====== */
+.App input[type="text"] {
+  display: block;
+  width: min(560px, 92%);
+  margin: 18px auto 26px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  outline: none;
+  font-size: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.App input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.App input[type="text"]:focus {
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: var(--ring), 0 16px 40px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+/* ====== Grid ====== */
 .user-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  padding: 24px;
+  gap: 18px;
+  padding: 6px 0 0;
 }
 
-/* Card */
+/* ====== Card ====== */
 .user-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  border-radius: var(--radius);
+  padding: 18px 18px 16px;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.10),
+      rgba(255, 255, 255, 0.06)
+    );
+  border: 1px solid var(--cardBorder);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border 0.22s ease;
+  text-align: left;
 }
 
-/* Hover effect */
+/* subtle shine */
+.user-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(
+      600px 220px at 20% 0%,
+      rgba(99, 102, 241, 0.28),
+      transparent 55%
+    ),
+    radial-gradient(
+      540px 220px at 80% 0%,
+      rgba(16, 185, 129, 0.18),
+      transparent 55%
+    );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .user-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow2);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
-/* Title */
+/* ====== Typography in Card ====== */
 .user-name {
-  margin-bottom: 10px;
-  font-size: 1.3rem;
-  color: #1f2933;
+  position: relative;
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.2px;
+}
+
+.user-card p {
+  position: relative;
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.4;
+}
+
+.user-card strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 650;
+  margin-right: 6px;
+}
+
+/* ====== Empty state (if you add later) ====== */
+.empty {
+  max-width: 1120px;
+  margin: 18px auto 0;
+  text-align: center;
+  color: var(--muted2);
+  padding: 24px 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: var(--radiusSm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ====== Mobile ====== */
+@media (max-width: 520px) {
+  .App {
+    padding-top: 28px;
+  }
+  .user-grid {
+    gap: 14px;
+  }
+  .user-card {
+    padding: 16px;
+  }
 }
